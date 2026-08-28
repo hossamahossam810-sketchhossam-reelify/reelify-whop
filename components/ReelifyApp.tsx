@@ -41,4 +41,51 @@ const CAPTIONS = [
   "the reviews weren't lying",
   "3 ways to style this",
   "you need this in your life",
-];
+];export default function ReelifyApp({ userId, username, accessLevel }: ReelifyAppProps) {
+  const [screen, setScreen] = useState("home");
+  const [product, setProduct] = useState(null);
+  const [template, setTemplate] = useState(null);
+  const [caption, setCaption] = useState(CAPTIONS[0]);
+  const [progress, setProgress] = useState(0);
+
+  const isPaidOrAdmin = accessLevel === "admin";
+
+  const goBack = () => {
+    if (screen === "product") setScreen("home");
+    else if (screen === "template") setScreen("product");
+    else if (screen === "caption") setScreen("template");
+    else if (screen === "result") setScreen("home");
+  };
+
+  const startGenerate = () => {
+    setScreen("generating");
+    setProgress(0);
+    let p = 0;
+    const interval = setInterval(() => {
+      p += 14 + Math.random() * 10;
+      if (p >= 100) {
+        p = 100;
+        clearInterval(interval);
+        setTimeout(() => setScreen("result"), 350);
+      }
+      setProgress(Math.min(100, Math.round(p)));
+    }, 260);
+  };
+
+  const reset = () => {
+    setProduct(null);
+    setTemplate(null);
+    setCaption(CAPTIONS[0]);
+    setScreen("home");
+  };
+
+  const steps = ["product", "template", "caption"];
+  const stepIndex = steps.indexOf(screen);
+
+  return (
+    <div style={{ padding: 24, fontFamily: "sans-serif", color: "#F2F0ED", background: "#17171C" }}>
+      <p>Reelify UI placeholder — full screens added in next update.</p>
+      <p>Signed in as: {username || userId}</p>
+    </div>
+  );
+}
